@@ -120,6 +120,16 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* CTA clip-path only on sm+ */
+.cta-clip {
+  clip-path: none;
+}
+@media (min-width: 640px) {
+  .cta-clip {
+    clip-path: polygon(10% 0%, 100% 0%, 100% 85%, 90% 100%, 0% 100%, 0% 15%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

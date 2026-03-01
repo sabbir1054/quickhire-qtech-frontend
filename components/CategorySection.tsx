@@ -43,8 +43,8 @@ export default function CategorySection() {
           </Link>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Desktop Grid */}
+        <div className="hidden gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-4">
           {categories.map((category) => {
             const Icon = category.icon;
             return (
@@ -74,6 +74,45 @@ export default function CategorySection() {
               </Link>
             );
           })}
+        </div>
+
+        {/* Mobile List */}
+        <div className="flex flex-col gap-3 sm:hidden">
+          {categories.map((category) => {
+            const Icon = category.icon;
+            return (
+              <Link
+                key={category.name}
+                href={`/jobs?category=${category.name.replace(" ", "_")}`}
+                className="flex items-center gap-4 border border-border bg-card px-5 py-4 transition-colors hover:border-[#4640DE]/30"
+              >
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#F8F8FD]">
+                  <Icon className="h-5 w-5 text-[#4640DE]" strokeWidth={1.5} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3
+                    style={{ fontFamily: "'Clash Display', sans-serif" }}
+                    className="text-base font-semibold text-foreground"
+                  >
+                    {category.name}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {category.jobs} jobs available
+                  </p>
+                </div>
+                <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+              </Link>
+            );
+          })}
+
+          {/* Mobile Show all jobs link */}
+          <Link
+            href="/jobs"
+            className="mt-2 flex items-center justify-center gap-2 text-sm font-semibold text-primary"
+          >
+            Show all jobs
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </div>
     </section>

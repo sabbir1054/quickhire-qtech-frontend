@@ -99,6 +99,60 @@ const jobs = [
   },
 ];
 
+function JobCard({ job }: { job: (typeof jobs)[number] }) {
+  return (
+    <Link
+      href="#"
+      className="group flex min-w-[260px] flex-col justify-between border border-border bg-card p-6 transition-all hover:shadow-md sm:min-w-0"
+    >
+      {/* Top: Logo + Badge */}
+      <div>
+        <div className="mb-5 flex items-center justify-between">
+          <div
+            className="flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold"
+            style={{ backgroundColor: job.logoBg }}
+          >
+            <span className={job.logoText}>{job.logo}</span>
+          </div>
+          <span className="rounded-sm border border-[#4640DE] px-3 py-1 text-xs font-medium text-[#4640DE]">
+            {job.type}
+          </span>
+        </div>
+
+        {/* Title */}
+        <h3
+          style={{ fontFamily: "'Clash Display', sans-serif" }}
+          className="text-lg font-semibold text-foreground"
+        >
+          {job.title}
+        </h3>
+
+        {/* Company + Location */}
+        <p className="mt-1 text-sm text-muted-foreground">
+          {job.company} <span className="mx-1">·</span> {job.location}
+        </p>
+
+        {/* Description */}
+        <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-muted-foreground/70">
+          {job.description}
+        </p>
+      </div>
+
+      {/* Tags */}
+      <div className="mt-4 flex flex-wrap gap-2">
+        {job.tags.map((tag) => (
+          <span
+            key={tag}
+            className={`rounded-full border px-3 py-0.5 text-xs font-medium ${tagColors[tag] || "border-border text-muted-foreground"}`}
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+    </Link>
+  );
+}
+
 export default function FeaturedJobsSection() {
   return (
     <section className="bg-background py-16 lg:py-20">
@@ -120,60 +174,31 @@ export default function FeaturedJobsSection() {
           </Link>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Mobile: Horizontal scroll */}
+        <div className="flex gap-4 overflow-x-auto pb-4 sm:hidden" style={{ scrollSnapType: "x mandatory" }}>
           {jobs.map((job, index) => (
-            <Link
-              key={index}
-              href="#"
-              className="group flex flex-col justify-between border border-border bg-card p-6 transition-all hover:shadow-md"
-            >
-              {/* Top: Logo + Badge */}
-              <div>
-                <div className="mb-5 flex items-center justify-between">
-                  <div
-                    className="flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold"
-                    style={{ backgroundColor: job.logoBg }}
-                  >
-                    <span className={job.logoText}>{job.logo}</span>
-                  </div>
-                  <span className="rounded-sm border border-[#4640DE] px-3 py-1 text-xs font-medium text-[#4640DE]">
-                    {job.type}
-                  </span>
-                </div>
-
-                {/* Title */}
-                <h3
-                  style={{ fontFamily: "'Clash Display', sans-serif" }}
-                  className="text-lg font-semibold text-foreground"
-                >
-                  {job.title}
-                </h3>
-
-                {/* Company + Location */}
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {job.company} <span className="mx-1">·</span> {job.location}
-                </p>
-
-                {/* Description */}
-                <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-muted-foreground/70">
-                  {job.description}
-                </p>
-              </div>
-
-              {/* Tags */}
-              <div className="mt-4 flex flex-wrap gap-2">
-                {job.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className={`rounded-full border px-3 py-0.5 text-xs font-medium ${tagColors[tag] || "border-border text-muted-foreground"}`}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </Link>
+            <div key={index} className="shrink-0" style={{ width: "75%", scrollSnapAlign: "start" }}>
+              <JobCard job={job} />
+            </div>
           ))}
+        </div>
+
+        {/* Desktop: Grid */}
+        <div className="hidden gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-4">
+          {jobs.map((job, index) => (
+            <JobCard key={index} job={job} />
+          ))}
+        </div>
+
+        {/* Mobile: Show all jobs link */}
+        <div className="mt-6 flex justify-center sm:hidden">
+          <Link
+            href="/jobs"
+            className="flex items-center gap-2 text-sm font-semibold text-primary"
+          >
+            Show all jobs
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </div>
     </section>

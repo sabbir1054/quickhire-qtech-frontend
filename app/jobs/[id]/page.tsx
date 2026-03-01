@@ -274,7 +274,7 @@ export default function JobDetailPage() {
               </Link>
             </div>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="hidden items-center gap-6 md:flex">
             <Link href="/login" className="text-base font-bold text-primary transition-colors hover:text-primary/80">
               Login
             </Link>

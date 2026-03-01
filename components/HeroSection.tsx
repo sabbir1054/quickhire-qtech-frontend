@@ -89,7 +89,7 @@ export default function HeroSection() {
         <div className="space-y-7 pb-6 pt-20 lg:max-w-[55%] lg:pt-0">
           <h1
             style={{ fontFamily: "'Clash Display', sans-serif" }}
-            className="text-5xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-6xl lg:text-7xl"
+            className="text-4xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl"
           >
             Discover{" "}
             <br />

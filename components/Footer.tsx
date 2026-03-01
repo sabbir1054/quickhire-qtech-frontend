@@ -33,9 +33,9 @@ export default function Footer() {
     <footer className="bg-[#202430]">
       <div className="mx-auto max-w-7xl px-4 pt-16 pb-10 sm:px-6 lg:px-8">
         {/* Top section */}
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.5fr]">
-          {/* Logo + Description */}
-          <div>
+        <div className="grid grid-cols-2 gap-8 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.5fr]">
+          {/* Logo + Description - full width on mobile */}
+          <div className="col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2">
               <Image src="/logo.png" alt="QuickHire" width={150} height={40} />
             </Link>
@@ -89,8 +89,8 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Newsletter */}
-          <div>
+          {/* Newsletter - full width on mobile */}
+          <div className="col-span-2 lg:col-span-1">
             <h4
               style={{ fontFamily: "'Clash Display', sans-serif" }}
               className="text-lg font-semibold text-white"

@@ -111,10 +111,10 @@ const jobs = [
 
 export default function LatestJobsSection() {
   return (
-    <section className="relative bg-background py-16 lg:py-20 overflow-hidden">
+    <section className="relative overflow-hidden bg-background py-16 lg:py-20">
       {/* Decorative geometric lines */}
       <svg
-        className="pointer-events-none absolute right-0 top-0 h-full w-1/3 opacity-[0.07]"
+        className="pointer-events-none absolute right-0 top-0 hidden h-full w-1/3 opacity-[0.07] sm:block"
         viewBox="0 0 300 600"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -145,18 +145,15 @@ export default function LatestJobsSection() {
           </Link>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        {/* Desktop: 2-column horizontal card grid */}
+        <div className="hidden gap-4 sm:grid lg:grid-cols-2">
           {jobs.map((job, index) => (
             <Link
               key={index}
               href="#"
               className="group flex items-start gap-6 border border-border bg-card p-6 transition-all hover:shadow-md"
             >
-              {/* Logo */}
               <div className="shrink-0">{job.logo}</div>
-
-              {/* Info */}
               <div className="min-w-0 flex-1">
                 <h3
                   style={{ fontFamily: "'Clash Display', sans-serif" }}
@@ -167,8 +164,6 @@ export default function LatestJobsSection() {
                 <p className="mt-1 text-sm text-muted-foreground">
                   {job.company} <span className="mx-1">·</span> {job.location}
                 </p>
-
-                {/* Tags */}
                 <div className="mt-3 flex flex-wrap gap-2">
                   {job.tags.map((tag) => (
                     <span
@@ -182,6 +177,47 @@ export default function LatestJobsSection() {
               </div>
             </Link>
           ))}
+        </div>
+
+        {/* Mobile: Single column, vertical cards */}
+        <div className="flex flex-col gap-4 sm:hidden">
+          {jobs.map((job, index) => (
+            <Link
+              key={index}
+              href="#"
+              className="group border border-border bg-card p-5 transition-all hover:shadow-md"
+            >
+              <div className="mb-4">{job.logo}</div>
+              <h3
+                style={{ fontFamily: "'Clash Display', sans-serif" }}
+                className="text-lg font-semibold text-foreground"
+              >
+                {job.title}
+              </h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {job.company} <span className="mx-1">·</span> {job.location}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {job.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className={`rounded-full border px-3 py-0.5 text-xs font-medium ${tagColors[tag] || "border-border text-muted-foreground"}`}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </Link>
+          ))}
+
+          {/* Mobile: Show all jobs link */}
+          <Link
+            href="/jobs"
+            className="mt-2 flex items-center justify-center gap-2 text-sm font-semibold text-primary"
+          >
+            Show all jobs
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </div>
     </section>
