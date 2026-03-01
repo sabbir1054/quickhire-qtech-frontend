@@ -1,8 +1,9 @@
 export type AuthUser = {
-  id?: number;
+  id?: string;
   userId?: string;
-  username: string;
+  name: string;
   email?: string;
+  role?: string;
 } | null;
 
 export interface AuthState {
@@ -10,12 +11,41 @@ export interface AuthState {
   accessToken: string | null;
 }
 
-export interface LoginResponse {
+export interface ApiResponse<T> {
+  statusCode: number;
+  success: boolean;
+  message: string;
+  data: T;
+}
+
+export interface ApiError {
+  success: false;
+  message: string;
+  errorMessages?: { path: string; message: string }[];
+}
+
+export interface RegisterRequest {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface RegisterData {
+  id: string;
+  role: string;
+  name: string;
+  email: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginData {
   accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
-  userId: string;
-  username: string;
 }
 
 export interface RefreshResponse {
