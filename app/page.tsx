@@ -2,6 +2,7 @@ import CategorySection from "@/components/CategorySection";
 import CompaniesSection from "@/components/CompaniesSection";
 import CTASection from "@/components/CTASection";
 import FeaturedJobsSection from "@/components/FeaturedJobsSection";
+import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
 import LatestJobsSection from "@/components/LatestJobsSection";
 import Navbar from "@/components/Navbar";
@@ -16,6 +17,7 @@ export default function Home() {
       <CTASection />
       <FeaturedJobsSection />
       <LatestJobsSection />
+      <Footer />
     </div>
   );
 }
