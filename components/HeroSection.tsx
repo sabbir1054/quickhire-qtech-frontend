@@ -102,7 +102,7 @@ export default function HeroSection() {
             {/* Location input */}
             <div className="flex flex-1 flex-col justify-center px-4 py-2">
               <div className="flex items-center gap-3">
-                <MapPin className="h-[18px] w-[18px] shrink-0 text-muted-foreground" />
+                <MapPin className="h-4.5 w-4.5 shrink-0 text-muted-foreground" />
                 <span className="flex-1 text-[15px] text-foreground">
                   Florence, Italy
                 </span>
