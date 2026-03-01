@@ -14,19 +14,15 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useGetJobsQuery } from "@/redux/api/endpoints/jobApi";
-import type { Application, Job } from "@/redux/api/endpoints/jobApi";
-
-interface ApplicationWithJob extends Application {
-  job: Job;
-}
+import { useGetApplicationsQuery } from "@/redux/api/endpoints/jobApi";
+import type { ApplicationResponse } from "@/redux/api/endpoints/jobApi";
 
 /* ─── Application Detail Modal ─── */
 function ApplicationModal({
   app,
   onClose,
 }: {
-  app: ApplicationWithJob;
+  app: ApplicationResponse;
   onClose: () => void;
 }) {
   return (
@@ -63,20 +59,22 @@ function ApplicationModal({
           </div>
 
           {/* Job Applied For */}
-          <div className="rounded-lg bg-[#F8F8FD] p-4">
-            <p className="text-xs font-medium text-muted-foreground">Applied for</p>
-            <p className="mt-1 text-sm font-semibold text-foreground">{app.job.title}</p>
-            <div className="mt-1.5 flex items-center gap-3 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <Briefcase className="h-3 w-3" />
-                {app.job.company}
-              </span>
-              <span className="flex items-center gap-1">
-                <MapPin className="h-3 w-3" />
-                {app.job.location}
-              </span>
+          {app.job && (
+            <div className="rounded-lg bg-[#F8F8FD] p-4">
+              <p className="text-xs font-medium text-muted-foreground">Applied for</p>
+              <p className="mt-1 text-sm font-semibold text-foreground">{app.job.title}</p>
+              <div className="mt-1.5 flex items-center gap-3 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <Briefcase className="h-3 w-3" />
+                  {app.job.company}
+                </span>
+                <span className="flex items-center gap-1">
+                  <MapPin className="h-3 w-3" />
+                  {app.job.location}
+                </span>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Details */}
           <div className="space-y-4">
@@ -138,10 +136,7 @@ function ApplicationModal({
         {/* Footer */}
         <div className="border-t border-border/50 px-6 py-4">
           <div className="flex items-center gap-3">
-            <a
-              href={`mailto:${app.email}`}
-              className="flex-1"
-            >
+            <a href={`mailto:${app.email}`} className="flex-1">
               <Button className="h-10 w-full rounded-none text-sm font-semibold">
                 <Mail className="h-4 w-4" />
                 Send Email
@@ -163,29 +158,24 @@ function ApplicationModal({
 
 /* ─── Main Page ─── */
 export default function ApplicationsPage() {
-  const { data, isLoading } = useGetJobsQuery({});
-  const [selectedApp, setSelectedApp] = useState<ApplicationWithJob | null>(null);
-  const [filterJob, setFilterJob] = useState("");
+  const { data, isLoading } = useGetApplicationsQuery();
+  const [selectedApp, setSelectedApp] = useState<ApplicationResponse | null>(null);
+  const [filterJobTitle, setFilterJobTitle] = useState("");
 
-  const jobs = data?.data || [];
-
-  // Aggregate all applications across jobs
-  const allApplications: ApplicationWithJob[] = jobs.flatMap((job) =>
-    (job.applications || []).map((app) => ({ ...app, job }))
-  );
+  const applications = data?.data || [];
 
   // Sort by newest first
-  allApplications.sort(
+  const sorted = [...applications].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 
-  // Filter by job
-  const filtered = filterJob
-    ? allApplications.filter((app) => app.job.id === filterJob)
-    : allApplications;
+  // Get unique job titles for filter
+  const jobTitles = [...new Set(applications.map((a) => a.job?.title).filter(Boolean))];
 
-  // Jobs that have applications (for filter dropdown)
-  const jobsWithApps = jobs.filter((j) => j.applications && j.applications.length > 0);
+  // Filter
+  const filtered = filterJobTitle
+    ? sorted.filter((app) => app.job?.title === filterJobTitle)
+    : sorted;
 
   return (
     <div className="space-y-6">
@@ -199,21 +189,21 @@ export default function ApplicationsPage() {
             Applications
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            {allApplications.length} total application{allApplications.length !== 1 ? "s" : ""}
+            {applications.length} total application{applications.length !== 1 ? "s" : ""}
           </p>
         </div>
 
         {/* Job filter */}
-        {jobsWithApps.length > 1 && (
+        {jobTitles.length > 1 && (
           <select
-            value={filterJob}
-            onChange={(e) => setFilterJob(e.target.value)}
+            value={filterJobTitle}
+            onChange={(e) => setFilterJobTitle(e.target.value)}
             className="h-10 border border-border bg-white px-3 text-sm text-foreground outline-none focus:border-[#4640DE]"
           >
             <option value="">All Jobs</option>
-            {jobsWithApps.map((job) => (
-              <option key={job.id} value={job.id}>
-                {job.title} — {job.company}
+            {jobTitles.map((title) => (
+              <option key={title} value={title!}>
+                {title}
               </option>
             ))}
           </select>
@@ -229,7 +219,7 @@ export default function ApplicationsPage() {
         <div className="rounded-lg border border-border/40 bg-white py-20 text-center">
           <FileText className="mx-auto h-12 w-12 text-muted-foreground/20" />
           <p className="mt-4 text-sm text-muted-foreground">
-            {allApplications.length === 0
+            {applications.length === 0
               ? "No applications received yet."
               : "No applications match the selected filter."}
           </p>
@@ -264,9 +254,11 @@ export default function ApplicationsPage() {
 
               {/* Job */}
               <div className="min-w-0">
-                <p className="truncate text-sm font-medium text-foreground">{app.job.title}</p>
+                <p className="truncate text-sm font-medium text-foreground">
+                  {app.job?.title || "—"}
+                </p>
                 <p className="truncate text-xs text-muted-foreground">
-                  {app.job.company} · {app.job.location}
+                  {app.job ? `${app.job.company} · ${app.job.location}` : "—"}
                 </p>
               </div>
 

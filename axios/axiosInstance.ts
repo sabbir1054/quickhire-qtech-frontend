@@ -71,14 +71,13 @@ const processQueue = (error: unknown, token: string | null = null) => {
 // Refresh the access token using HTTP-only cookie
 const refreshAccessToken = async (): Promise<string> => {
   const baseUrl = getBaseUrl();
-  const response = await axios.post(
-    `${baseUrl}/auth/refresh`,
-    {},
+  const response = await axios.get(
+    `${baseUrl}/auth/refresh-token`,
     {
-      withCredentials: true, // Include refresh token cookie
+      withCredentials: true, // browser sends refreshToken cookie automatically
     }
   );
-  return response.data.accessToken;
+  return response.data.data.accessToken;
 };
 
 // Request interceptor - attach access token from memory
@@ -115,7 +114,7 @@ instance.interceptors.response.use(
       if (
         url.includes("/auth/login") ||
         url.includes("/auth/register") ||
-        url.includes("/auth/refresh") ||
+        url.includes("/auth/refresh-token") ||
         url.includes("/auth/logout")
       ) {
         return Promise.reject(error);

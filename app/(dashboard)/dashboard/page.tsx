@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   useGetJobsQuery,
+  useGetApplicationsQuery,
   useDeleteJobMutation,
   type Job,
 } from "@/redux/api/endpoints/jobApi";
@@ -94,14 +95,12 @@ function JobRow({ job, onDelete }: { job: Job; onDelete: (id: string) => void })
 
 export default function DashboardPage() {
   const { data, isLoading } = useGetJobsQuery({});
+  const { data: appsData } = useGetApplicationsQuery();
   const [deleteJob] = useDeleteJobMutation();
 
   const jobs = data?.data || [];
   const totalJobs = data?.meta?.total || jobs.length;
-  const totalApplications = jobs.reduce(
-    (sum, job) => sum + (job.applications?.length || 0),
-    0
-  );
+  const totalApplications = appsData?.data?.length || 0;
   const categories = new Set(jobs.map((j) => j.category)).size;
 
   const handleDelete = async (id: string) => {

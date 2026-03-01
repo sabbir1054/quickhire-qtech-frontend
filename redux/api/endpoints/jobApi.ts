@@ -117,13 +117,27 @@ const jobApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Jobs"],
     }),
+    getApplications: builder.query<ApiResponse<ApplicationResponse[]>, void>({
+      query: () => ({
+        url: "/applications",
+        method: "GET",
+      }),
+      providesTags: ["Applications"],
+    }),
+    getApplication: builder.query<ApiResponse<ApplicationResponse>, string>({
+      query: (id) => ({
+        url: `/applications/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["Applications"],
+    }),
     submitApplication: builder.mutation<ApiResponse<ApplicationResponse>, SubmitApplicationRequest>({
       query: (data) => ({
         url: "/applications",
         method: "POST",
         data,
       }),
-      invalidatesTags: ["Jobs"],
+      invalidatesTags: ["Jobs", "Applications"],
     }),
   }),
 });
@@ -131,6 +145,8 @@ const jobApi = baseApi.injectEndpoints({
 export const {
   useGetJobsQuery,
   useGetJobQuery,
+  useGetApplicationsQuery,
+  useGetApplicationQuery,
   useCreateJobMutation,
   useDeleteJobMutation,
   useSubmitApplicationMutation,
