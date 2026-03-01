@@ -54,7 +54,7 @@ export default function LoginPage() {
         );
 
         toast.success(res.message || "Login successful");
-        router.push("/");
+        router.push("/dashboard");
       }
     } catch (err: unknown) {
       const error = err as { data?: { message?: string; errorMessages?: { message: string }[] } };

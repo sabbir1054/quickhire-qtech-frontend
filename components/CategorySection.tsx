@@ -50,7 +50,7 @@ export default function CategorySection() {
             return (
               <Link
                 key={category.name}
-                href={`/jobs/${category.name.toLowerCase().replace(" ", "-")}`}
+                href={`/jobs?category=${category.name.replace(" ", "_")}`}
                 className="group flex flex-col justify-between rounded-sm border border-border bg-card p-8 text-foreground transition-all duration-300 hover:border-[#4640DE] hover:bg-[#4640DE] hover:text-white"
               >
                 <div>

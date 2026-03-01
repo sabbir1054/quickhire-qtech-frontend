@@ -21,7 +21,7 @@ export default function Navbar() {
 
           <div className="hidden items-center gap-7 md:flex">
             <Link
-              href="/find-jobs"
+              href="/jobs"
               className="text-[15px] text-foreground/80 transition-colors hover:text-foreground"
             >
               Find Jobs

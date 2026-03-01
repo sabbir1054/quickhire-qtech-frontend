@@ -1,8 +1,46 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Search, MapPin, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+const LOCATIONS = [
+  "Remote",
+  "Dhaka",
+  "Chittagong",
+  "Rajshahi",
+  "Khulna",
+  "Sylhet",
+  "Rangpur",
+  "Barishal",
+  "Mymensingh",
+  "Comilla",
+  "Gazipur",
+];
+
+const popularTags = ["UI Designer", "UX Researcher", "Android", "Admin"];
+
 export default function HeroSection() {
+  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [location, setLocation] = useState("");
+  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (searchTerm.trim()) params.set("searchTerm", searchTerm.trim());
+    if (location) params.set("location", location);
+    const query = params.toString();
+    router.push(`/jobs${query ? `?${query}` : ""}`);
+  };
+
+  const handleTagClick = (tag: string) => {
+    router.push(`/jobs?searchTerm=${encodeURIComponent(tag)}`);
+  };
+
   return (
     <section className="relative min-h-[80vh] overflow-hidden">
       {/* Subtle purple gradients */}
@@ -16,7 +54,7 @@ export default function HeroSection() {
       />
 
       {/* Right Column - Man Image (absolute, pinned to bottom-right) */}
-      <div className="pointer-events-none absolute bottom-0 right-100 top-20  hidden w-[45%] max-w-lg lg:block ">
+      <div className="pointer-events-none absolute bottom-0 right-100 top-20 hidden w-[45%] max-w-lg lg:block">
         {/* Decorative geometric SVG */}
         <svg
           className="absolute right-0 top-1/2 h-full w-full -translate-y-1/2"
@@ -83,7 +121,7 @@ export default function HeroSection() {
         </div>
 
         {/* Search Bar */}
-        <div className="relative z-30 mt-2 max-w-3xl pb-4">
+        <form onSubmit={handleSearch} className="relative z-30 mt-2 max-w-3xl pb-4">
           <div className="flex flex-col bg-card px-3 py-2 shadow-2xl sm:flex-row sm:items-stretch">
             {/* Job title input */}
             <div className="flex flex-1 flex-col justify-center px-4 py-2">
@@ -91,6 +129,8 @@ export default function HeroSection() {
                 <Search className="h-4.5 w-4.5 shrink-0 text-muted-foreground/70" />
                 <input
                   type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Job title or keyword"
                   aria-label="Job title or keyword"
                   className="w-full bg-transparent text-[15px] text-foreground outline-none placeholder:text-muted-foreground/60"
@@ -99,21 +139,48 @@ export default function HeroSection() {
               <div className="mt-2 h-[1.5px] rounded-full bg-primary/30" />
             </div>
 
-            {/* Location input */}
-            <div className="flex flex-1 flex-col justify-center px-4 py-2">
-              <div className="flex items-center gap-3">
+            {/* Location dropdown */}
+            <div className="relative flex flex-1 flex-col justify-center px-4 py-2">
+              <button
+                type="button"
+                onClick={() => setShowLocationDropdown(!showLocationDropdown)}
+                className="flex items-center gap-3"
+              >
                 <MapPin className="h-4.5 w-4.5 shrink-0 text-muted-foreground" />
-                <span className="flex-1 text-[15px] text-foreground">
-                  Florence, Italy
+                <span className="flex-1 text-left text-[15px] text-foreground">
+                  {location ? location.replace(/_/g, " ") : "Select Location"}
                 </span>
-                <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground/60" />
-              </div>
+                <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground/60 transition-transform ${showLocationDropdown ? "rotate-180" : ""}`} />
+              </button>
               <div className="mt-2 h-[1.5px] rounded-full bg-primary/30" />
+
+              {/* Dropdown */}
+              {showLocationDropdown && (
+                <div className="absolute left-0 top-full z-50 mt-2 max-h-52 w-full overflow-y-auto border border-border bg-white shadow-lg">
+                  <button
+                    type="button"
+                    onClick={() => { setLocation(""); setShowLocationDropdown(false); }}
+                    className={`w-full px-4 py-2.5 text-left text-sm transition-colors hover:bg-[#4640DE]/5 ${!location ? "font-medium text-[#4640DE]" : "text-muted-foreground"}`}
+                  >
+                    All Locations
+                  </button>
+                  {LOCATIONS.map((loc) => (
+                    <button
+                      type="button"
+                      key={loc}
+                      onClick={() => { setLocation(loc); setShowLocationDropdown(false); }}
+                      className={`w-full px-4 py-2.5 text-left text-sm transition-colors hover:bg-[#4640DE]/5 ${location === loc ? "font-medium text-[#4640DE]" : "text-muted-foreground"}`}
+                    >
+                      {loc.replace(/_/g, " ")}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Search button */}
             <div className="flex shrink-0 items-center px-1 pt-2 sm:pt-0">
-              <Button className="h-10 w-full rounded-none px-8 text-sm font-semibold sm:w-auto">
+              <Button type="submit" className="h-10 w-full rounded-none px-8 text-sm font-semibold sm:w-auto">
                 Search my job
               </Button>
             </div>
@@ -122,9 +189,20 @@ export default function HeroSection() {
           {/* Popular Tags */}
           <p className="mt-5 text-sm text-muted-foreground">
             <span className="font-semibold text-foreground">Popular : </span>
-            UI Designer, UX Researcher, Android, Admin
+            {popularTags.map((tag, i) => (
+              <span key={tag}>
+                <button
+                  type="button"
+                  onClick={() => handleTagClick(tag)}
+                  className="transition-colors hover:text-[#4640DE]"
+                >
+                  {tag}
+                </button>
+                {i < popularTags.length - 1 && ", "}
+              </span>
+            ))}
           </p>
-        </div>
+        </form>
       </div>
     </section>
   );
