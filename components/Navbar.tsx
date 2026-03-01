@@ -43,7 +43,7 @@ export default function Navbar() {
           >
             Login
           </Link>
-          <Button size="lg" className="rounded-lg px-7 text-sm font-semibold">
+          <Button size="lg" className="rounded-none px-7 text-sm font-semibold">
             Sign Up
           </Button>
         </div>
